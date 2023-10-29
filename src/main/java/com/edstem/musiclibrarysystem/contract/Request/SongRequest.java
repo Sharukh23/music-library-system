@@ -1,16 +1,17 @@
 package com.edstem.musiclibrarysystem.contract.Request;
 
 import com.edstem.musiclibrarysystem.constant.Genre;
-import com.edstem.musiclibrarysystem.model.Review;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.List;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SongRequest {
     @NotBlank(message = "Song cannot be empty")
     private String song;
@@ -20,5 +21,7 @@ public class SongRequest {
     private String artist;
     @NotBlank(message = "Album cannot be empty")
     private String album;
-    private List<Review> reviews;
+
+
+
 }

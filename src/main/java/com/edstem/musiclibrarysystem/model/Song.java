@@ -1,6 +1,7 @@
 package com.edstem.musiclibrarysystem.model;
 
 import com.edstem.musiclibrarysystem.constant.Genre;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -19,16 +21,17 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @Builder
 public class Song {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String songs;
+    private String song;
     @Enumerated(EnumType.STRING)
     private Genre genre;
     private String artist;
     private String album;
-    @OneToMany
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL)
     private List<Review> reviews;
 }
