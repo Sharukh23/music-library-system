@@ -7,6 +7,7 @@ import com.edstem.musiclibrarysystem.contract.Response.ReviewResponse;
 import com.edstem.musiclibrarysystem.contract.Response.SongResponse;
 import com.edstem.musiclibrarysystem.service.SongService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +17,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/songs")
@@ -37,7 +36,8 @@ public class SongController {
     }
 
     @PutMapping("/{id}")
-    public SongResponse updateSongById(@PathVariable Long id, @Valid @RequestBody SongRequest request) {
+    public SongResponse updateSongById(
+            @PathVariable Long id, @Valid @RequestBody SongRequest request) {
         return songService.updateSongById(id, request);
     }
 
@@ -67,7 +67,8 @@ public class SongController {
     }
 
     @PostMapping("/{id}/reviews")
-    public ReviewResponse addReview(@PathVariable Long id, @Valid @RequestBody ReviewRequest review) {
+    public ReviewResponse addReview(
+            @PathVariable Long id, @Valid @RequestBody ReviewRequest review) {
         return songService.addReview(id, review);
     }
 

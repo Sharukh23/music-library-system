@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 public class ReviewRequest {
     @NotBlank(message = "Reviewer cannot be empty")
     private String reviewer;
+
     @NotBlank(message = "Comment cannot be empty")
     private String comment;
 }

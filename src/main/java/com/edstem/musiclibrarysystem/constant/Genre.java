@@ -4,5 +4,7 @@ public enum Genre {
     ROCK,
     CLASSICAL,
     POP,
+    RAP,
+    FOLK,
     JASS
 }

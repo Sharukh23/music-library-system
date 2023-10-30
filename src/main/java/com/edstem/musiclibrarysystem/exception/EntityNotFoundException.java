@@ -18,5 +18,4 @@ public class EntityNotFoundException extends RuntimeException {
         this.entity = entity;
         this.id = id;
     }
-
 }

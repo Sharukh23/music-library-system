@@ -12,12 +12,11 @@ import com.edstem.musiclibrarysystem.model.Review;
 import com.edstem.musiclibrarysystem.model.Song;
 import com.edstem.musiclibrarysystem.repository.ReviewRepository;
 import com.edstem.musiclibrarysystem.repository.SongRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,29 +35,28 @@ public class SongService {
     }
 
     public SongResponse viewSongById(Long id) {
-        Song song = songRepository
-                .findById(id)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("Song", id));
+        Song song =
+                songRepository
+                        .findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Song", id));
         return modelMapper.map(song, SongResponse.class);
     }
 
-
     public SongResponse updateSongById(Long id, SongRequest request) {
-        Song song = songRepository
-                .findById(id)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("Song", id));
+        Song song =
+                songRepository
+                        .findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Song", id));
         modelMapper.map(request, song);
         Song updatedSong = songRepository.save(song);
         return modelMapper.map(updatedSong, SongResponse.class);
     }
 
     public DeleteSongResponse deleteSongById(Long id) {
-        Song song = songRepository
-                .findById(id)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("Song", id));
+        Song song =
+                songRepository
+                        .findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Song", id));
         songRepository.delete(song);
         return DeleteSongResponse.builder()
                 .message("Song " + song.getSong() + " has been deleted")
@@ -102,28 +100,29 @@ public class SongService {
                 .collect(Collectors.toList());
     }
 
-
     public ReviewResponse addReview(Long id, ReviewRequest request) {
-        Song song = songRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Song", id));
-        Review review = Review.builder()
-                .reviewer(request.getReviewer())
-                .comment(request.getComment())
-                .song(song)
-                .build();
+        Song song =
+                songRepository
+                        .findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Song", id));
+        Review review =
+                Review.builder()
+                        .reviewer(request.getReviewer())
+                        .comment(request.getComment())
+                        .song(song)
+                        .build();
         Review savedReview = reviewRepository.save(review);
         return modelMapper.map(savedReview, ReviewResponse.class);
     }
 
     public List<ReviewResponse> viewAllReviews(Long id) {
-        Song song = songRepository
-                .findById(id)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("Song", id));
+        Song song =
+                songRepository
+                        .findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Song", id));
         List<Review> reviews = reviewRepository.findBySong(song);
         return reviews.stream()
                 .map(review -> modelMapper.map(review, ReviewResponse.class))
                 .collect(Collectors.toList());
     }
-
 }

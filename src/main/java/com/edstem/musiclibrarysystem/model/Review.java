@@ -19,8 +19,8 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String reviewer;
     private String comment;
-    @ManyToOne
-    private Song song;
+    @ManyToOne private Song song;
 }

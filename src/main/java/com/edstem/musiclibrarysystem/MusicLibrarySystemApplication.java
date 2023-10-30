@@ -21,5 +21,4 @@ public class MusicLibrarySystemApplication {
                 .setFieldAccessLevel(Configuration.AccessLevel.PRIVATE);
         return mapper;
     }
-
 }
