@@ -1,6 +1,9 @@
 package com.edstem.musiclibrarysystem.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -13,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.edstem.musiclibrarysystem.constant.Genre;
 import com.edstem.musiclibrarysystem.contract.Request.ReviewRequest;
 import com.edstem.musiclibrarysystem.contract.Request.SongRequest;
-import com.edstem.musiclibrarysystem.contract.Response.DeleteSongResponse;
 import com.edstem.musiclibrarysystem.contract.Response.ReviewResponse;
 import com.edstem.musiclibrarysystem.contract.Response.SongResponse;
 import com.edstem.musiclibrarysystem.service.SongService;
@@ -67,37 +69,37 @@ public class SongControllerTest {
     }
 
     @Test
-    void testUpdateSongById() throws Exception {
+    public void testUpdateSongById() throws Exception {
         Long id = 1L;
         SongRequest songRequest =
                 new SongRequest("Updated Song", Genre.ROCK, "Updated Artist", "Updated Album");
         SongResponse songResponse =
                 new SongResponse(id, "Updated Song", Genre.ROCK, "Updated Artist", "Updated Album");
 
-        when(songService.updateSongById(id, songRequest)).thenReturn(songResponse);
+        when(songService.updateSongById(eq(id), any(SongRequest.class))).thenReturn(songResponse);
 
         mockMvc.perform(
                         put("/songs/" + id)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(new ObjectMapper().writeValueAsString(songRequest)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(new ObjectMapper().writeValueAsString(songResponse)));
+
+        verify(songService, times(1)).updateSongById(eq(id), any(SongRequest.class));
     }
 
     @Test
-    void testDeleteSongById() throws Exception {
+    public void testDeleteSongById() throws Exception {
         Long id = 1L;
-        DeleteSongResponse deleteSongResponse =
-                new DeleteSongResponse("Song with id " + id + " deleted successfully.");
+        String message = "Song Original Song has been deleted";
 
-        when(songService.deleteSongById(id)).thenReturn(deleteSongResponse);
+        when(songService.deleteSongById(id)).thenReturn(message);
 
-        mockMvc.perform(delete("/songs/" + id))
-                .andDo(print())
+        mockMvc.perform(delete("/songs/" + id).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(
-                        content().json(new ObjectMapper().writeValueAsString(deleteSongResponse)));
+                .andExpect(content().string(message));
+
+        verify(songService, times(1)).deleteSongById(id);
     }
 
     @Test
@@ -166,36 +168,38 @@ public class SongControllerTest {
     }
 
     @Test
-    void testAddReview() throws Exception {
+    public void testAddReview() throws Exception {
         Long id = 1L;
-        ReviewRequest reviewRequest = new ReviewRequest("Test Review", "Test Comment");
+        ReviewRequest reviewRequest = new ReviewRequest("John Doe", "Great song!");
         ReviewResponse reviewResponse =
-                new ReviewResponse(id, "Test Review", "Test Comment", "Test Song");
+                new ReviewResponse(id, "John Doe", "Great song!", "Original Song");
 
-        when(songService.addReview(id, reviewRequest)).thenReturn(reviewResponse);
+        when(songService.addReview(eq(id), any(ReviewRequest.class))).thenReturn(reviewResponse);
 
         mockMvc.perform(
                         post("/songs/" + id + "/reviews")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(new ObjectMapper().writeValueAsString(reviewRequest)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(new ObjectMapper().writeValueAsString(reviewResponse)));
+
+        verify(songService, times(1)).addReview(eq(id), any(ReviewRequest.class));
     }
 
     @Test
-    void testViewAllReviews() throws Exception {
+    public void testViewAllReviews() throws Exception {
         Long id = 1L;
         List<ReviewResponse> reviewResponses =
                 Arrays.asList(
-                        new ReviewResponse(id, "Test Review 1", "Test Comment 1", "Test Song 1"),
-                        new ReviewResponse(id, "Test Review 2", "Test Comment 2", "Test Song 2"));
+                        new ReviewResponse(id, "John Doe", "Great song!", "Original Song"),
+                        new ReviewResponse(id, "Jane Doe", "Awesome song!", "Original Song"));
 
         when(songService.viewAllReviews(id)).thenReturn(reviewResponses);
 
         mockMvc.perform(get("/songs/" + id + "/reviews").contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(new ObjectMapper().writeValueAsString(reviewResponses)));
+
+        verify(songService, times(1)).viewAllReviews(id);
     }
 }

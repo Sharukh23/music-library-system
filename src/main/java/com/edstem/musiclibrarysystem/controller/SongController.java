@@ -2,7 +2,6 @@ package com.edstem.musiclibrarysystem.controller;
 
 import com.edstem.musiclibrarysystem.contract.Request.ReviewRequest;
 import com.edstem.musiclibrarysystem.contract.Request.SongRequest;
-import com.edstem.musiclibrarysystem.contract.Response.DeleteSongResponse;
 import com.edstem.musiclibrarysystem.contract.Response.ReviewResponse;
 import com.edstem.musiclibrarysystem.contract.Response.SongResponse;
 import com.edstem.musiclibrarysystem.service.SongService;
@@ -42,7 +41,7 @@ public class SongController {
     }
 
     @DeleteMapping("/{id}")
-    public DeleteSongResponse deleteSongById(@PathVariable Long id) {
+    public String deleteSongById(@PathVariable Long id) {
         return songService.deleteSongById(id);
     }
 

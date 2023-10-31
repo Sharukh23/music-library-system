@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import com.edstem.musiclibrarysystem.constant.Genre;
 import com.edstem.musiclibrarysystem.contract.Request.ReviewRequest;
 import com.edstem.musiclibrarysystem.contract.Request.SongRequest;
-import com.edstem.musiclibrarysystem.contract.Response.DeleteSongResponse;
 import com.edstem.musiclibrarysystem.contract.Response.ReviewResponse;
 import com.edstem.musiclibrarysystem.contract.Response.SongResponse;
 import com.edstem.musiclibrarysystem.model.Review;
@@ -17,6 +16,7 @@ import com.edstem.musiclibrarysystem.repository.ReviewRepository;
 import com.edstem.musiclibrarysystem.repository.SongRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,7 +56,7 @@ public class SongServiceTest {
     }
 
     @Test
-    void testViewSongById() {
+    public void testViewSongById() {
         Long id = 1L;
         Song song =
                 new Song(
@@ -66,8 +66,7 @@ public class SongServiceTest {
                         "Test Artist",
                         "Test Album",
                         new ArrayList<>());
-
-        SongResponse expectedResponse = modelMapper.map(song, SongResponse.class);
+        SongResponse expectedResponse = new ModelMapper().map(song, SongResponse.class);
 
         when(songRepository.findById(id)).thenReturn(Optional.of(song));
 
@@ -77,9 +76,9 @@ public class SongServiceTest {
     }
 
     @Test
-    void testUpdateSongById() {
+    public void testUpdateSongById() {
         Long id = 1L;
-        Song originalSong =
+        Song song =
                 new Song(
                         id,
                         "Original Song",
@@ -87,23 +86,22 @@ public class SongServiceTest {
                         "Original Artist",
                         "Original Album",
                         new ArrayList<>());
-        SongRequest request =
-                new SongRequest("Updated Song", Genre.POP, "Updated Artist", "Updated Album");
-
+        SongRequest songRequest =
+                new SongRequest("Updated Song", Genre.ROCK, "Updated Artist", "Updated Album");
         Song updatedSong =
                 new Song(
                         id,
-                        request.getSong(),
-                        request.getGenre(),
-                        request.getArtist(),
-                        request.getAlbum(),
+                        "Updated Song",
+                        Genre.ROCK,
+                        "Updated Artist",
+                        "Updated Album",
                         new ArrayList<>());
-        SongResponse expectedResponse = modelMapper.map(updatedSong, SongResponse.class);
+        SongResponse expectedResponse = new ModelMapper().map(updatedSong, SongResponse.class);
 
-        when(songRepository.findById(id)).thenReturn(Optional.of(originalSong));
+        when(songRepository.findById(id)).thenReturn(Optional.of(song));
         when(songRepository.save(any(Song.class))).thenReturn(updatedSong);
 
-        SongResponse actualResponse = songService.updateSongById(id, request);
+        SongResponse actualResponse = songService.updateSongById(id, songRequest);
 
         assertEquals(expectedResponse, actualResponse);
     }
@@ -114,23 +112,18 @@ public class SongServiceTest {
         Song song =
                 new Song(
                         id,
-                        "Test Song",
+                        "Original Song",
                         Genre.ROCK,
-                        "Test Artist",
-                        "Test Album",
+                        "Original Artist",
+                        "Original Album",
                         new ArrayList<>());
 
-        DeleteSongResponse expectedResponse =
-                DeleteSongResponse.builder()
-                        .message("Song " + song.getSong() + " has been deleted")
-                        .build();
+        when(songRepository.findById(any())).thenReturn(Optional.of(song));
+        doNothing().when(songRepository).delete(any());
 
-        when(songRepository.findById(id)).thenReturn(Optional.of(song));
-        doNothing().when(songRepository).delete(song);
+        String message = songService.deleteSongById(song.getId());
 
-        DeleteSongResponse actualResponse = songService.deleteSongById(id);
-
-        assertEquals(expectedResponse, actualResponse);
+        assertEquals(message, "Song " + song.getSong() + " has been deleted");
     }
 
     @Test
@@ -241,61 +234,84 @@ public class SongServiceTest {
     }
 
     @Test
-    void testAddReview() {
+    public void testAddReview() {
         Long id = 1L;
-        ReviewRequest request = new ReviewRequest("Test Reviewer", "Test Comment");
         Song song =
                 new Song(
                         id,
-                        "Test Song",
+                        "Original Song",
                         Genre.ROCK,
-                        "Test Artist",
-                        "Test Album",
+                        "Original Artist",
+                        "Original Album",
                         new ArrayList<>());
+        ReviewRequest reviewRequest = new ReviewRequest("John Doe", "Great song!");
         Review review =
                 Review.builder()
-                        .reviewer(request.getReviewer())
-                        .comment(request.getComment())
+                        .id(id)
+                        .reviewer("John Doe")
+                        .comment("Great song!")
                         .song(song)
                         .build();
-
-        ReviewResponse expectedResponse = modelMapper.map(review, ReviewResponse.class);
+        ReviewResponse expectedResponse = new ModelMapper().map(review, ReviewResponse.class);
 
         when(songRepository.findById(id)).thenReturn(Optional.of(song));
         when(reviewRepository.save(any(Review.class))).thenReturn(review);
 
-        ReviewResponse actualResponse = songService.addReview(id, request);
+        ReviewResponse actualResponse = songService.addReview(id, reviewRequest);
 
         assertEquals(expectedResponse, actualResponse);
     }
 
     @Test
-    void testViewAllReviews() {
+    public void testViewAllReviews() {
         Long id = 1L;
         Song song =
                 new Song(
                         id,
-                        "Test Song",
+                        "Original Song",
                         Genre.ROCK,
-                        "Test Artist",
-                        "Test Album",
+                        "Original Artist",
+                        "Original Album",
                         new ArrayList<>());
-        Review review1 =
-                Review.builder().reviewer("Reviewer 1").comment("Comment 1").song(song).build();
-        Review review2 =
-                Review.builder().reviewer("Reviewer 2").comment("Comment 2").song(song).build();
-
-        List<Review> reviews = Arrays.asList(review1, review2);
-        List<ReviewResponse> expectedResponse =
-                reviews.stream()
-                        .map(review -> modelMapper.map(review, ReviewResponse.class))
-                        .collect(Collectors.toList());
+        Review review =
+                Review.builder()
+                        .id(id)
+                        .reviewer("John Doe")
+                        .comment("Great song!")
+                        .song(song)
+                        .build();
+        List<Review> reviews = Arrays.asList(review);
+        ReviewResponse expectedResponse = new ModelMapper().map(review, ReviewResponse.class);
+        List<ReviewResponse> expectedResponses = Arrays.asList(expectedResponse);
 
         when(songRepository.findById(id)).thenReturn(Optional.of(song));
         when(reviewRepository.findBySong(song)).thenReturn(reviews);
 
-        List<ReviewResponse> actualResponse = songService.viewAllReviews(id);
+        List<ReviewResponse> actualResponses = songService.viewAllReviews(id);
 
-        assertEquals(expectedResponse, actualResponse);
+        assertEquals(expectedResponses, actualResponses);
+    }
+
+    @Test
+    public void testHashCode() {
+        ReviewResponse review1 = new ReviewResponse(1L, "John Doe", "Great song!", "Original Song");
+        ReviewResponse review2 = new ReviewResponse(1L, "John Doe", "Great song!", "Original Song");
+        SongResponse song1 =
+                new SongResponse(
+                        1L, "Original Song", Genre.ROCK, "Original Artist", "Original Album");
+        SongResponse song2 =
+                new SongResponse(
+                        1L, "Original Song", Genre.ROCK, "Original Artist", "Original Album");
+
+        HashSet<ReviewResponse> reviewSet = new HashSet<>();
+        reviewSet.add(review1);
+        reviewSet.add(review2);
+
+        HashSet<SongResponse> songSet = new HashSet<>();
+        songSet.add(song1);
+        songSet.add(song2);
+
+        assertEquals(1, reviewSet.size());
+        assertEquals(1, songSet.size());
     }
 }

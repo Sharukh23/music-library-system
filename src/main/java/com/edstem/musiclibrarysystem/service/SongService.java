@@ -3,7 +3,6 @@ package com.edstem.musiclibrarysystem.service;
 import com.edstem.musiclibrarysystem.constant.Genre;
 import com.edstem.musiclibrarysystem.contract.Request.ReviewRequest;
 import com.edstem.musiclibrarysystem.contract.Request.SongRequest;
-import com.edstem.musiclibrarysystem.contract.Response.DeleteSongResponse;
 import com.edstem.musiclibrarysystem.contract.Response.ReviewResponse;
 import com.edstem.musiclibrarysystem.contract.Response.SongResponse;
 import com.edstem.musiclibrarysystem.model.Review;
@@ -54,16 +53,14 @@ public class SongService {
         return modelMapper.map(updatedSong, SongResponse.class);
     }
 
-    public DeleteSongResponse deleteSongById(Long id) {
+    public String deleteSongById(Long id) {
         Song song =
                 songRepository
                         .findById(id)
                         .orElseThrow(
                                 () -> new EntityNotFoundException("Song not found with id" + id));
         songRepository.delete(song);
-        return DeleteSongResponse.builder()
-                .message("Song " + song.getSong() + " has been deleted")
-                .build();
+        return "Song " + song.getSong() + " has been deleted";
     }
 
     public List<SongResponse> viewAllSongs() {

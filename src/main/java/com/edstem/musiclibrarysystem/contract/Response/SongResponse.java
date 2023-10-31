@@ -2,12 +2,14 @@ package com.edstem.musiclibrarysystem.contract.Response;
 
 import com.edstem.musiclibrarysystem.constant.Genre;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class SongResponse {
     private Long id;
     private String song;
