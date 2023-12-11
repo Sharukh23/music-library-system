@@ -1,0 +1,139 @@
+{
+	"info": {
+		"_postman_id": "6284c2bd-ad17-4bdb-8dd0-d270e409e47a",
+		"name": "music-library-system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28741936"
+	},
+	"item": [
+		{
+			"name": "addSong",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"song\": \"Shape of You\",\r\n    \"genre\": \"POP\",\r\n    \"artist\": \"Ed Sheeran\",\r\n    \"album\": \"÷ (Divide)\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/songs"
+			},
+			"response": []
+		},
+		{
+			"name": "viewSongById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/songs/3"
+			},
+			"response": []
+		},
+		{
+			"name": "updateSongById",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"song\": \"Gold Dust Woman\",\r\n    \"genre\": \"ROCK\",\r\n    \"artist\": \"Fleetwood Mac\",\r\n    \"album\": \"Rumours\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/songs/3"
+			},
+			"response": []
+		},
+		{
+			"name": "viewSongsByArtist",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/songs/artist/dathan"
+			},
+			"response": []
+		},
+		{
+			"name": "viewSongsByAlbum",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/songs/album/x (Multiply)"
+			},
+			"response": []
+		},
+		{
+			"name": "addReview",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"reviewer\": \"Midun\",\r\n    \"comment\": \"Great song\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/songs/7/reviews"
+			},
+			"response": []
+		},
+		{
+			"name": "viewAllSongs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/songs"
+			},
+			"response": []
+		},
+		{
+			"name": "deleteSongById",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:8080/songs/3"
+			},
+			"response": []
+		},
+		{
+			"name": "viewSongsByGenre",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/songs/genre/POP"
+			},
+			"response": []
+		},
+		{
+			"name": "viewAllReviews",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/songs/7/reviews"
+			},
+			"response": []
+		}
+	]
+}
